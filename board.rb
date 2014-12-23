@@ -1,13 +1,11 @@
+# Represents Conway GOL board
 class Board
   attr_accessor :alive_cells
 
   def initialize(*cells)
     @alive_cells ||= []
-    unless cells.nil?
-      cells.each do |position|
-        @alive_cells << Cell.new(position)
-      end
-    end
+    cells ||= []
+    cells.each { |position| @alive_cells << Cell.new(position) }
   end
 
   def ==(other)
@@ -34,13 +32,14 @@ class Board
     @alive_cells.include?(cell)
   end
 
+  alias_method :is_alive?, :include?
   # Returns Cells that are born in next tick
   def born
     neighbours = cells_neighbours
     h = count_neighbours(neighbours)
     born ||= []
-    h.each do |k,v|
-      born << Cell.new(k) if v==3
+    h.each do |k, v|
+      born << Cell.new(k) if v == 3
     end
     born
   end
@@ -52,8 +51,8 @@ class Board
     neighbours.compact!
     h = count_neighbours(neighbours)
     alive ||= []
-    h.each do |k,v|
-      alive << Cell.new(k) if v==2 || v==3
+    h.each do |k, v|
+      alive << Cell.new(k) if v == 2 || v == 3
     end
     alive
   end
@@ -68,14 +67,10 @@ class Board
   end
 
   def count_neighbours(neighbours)
-    h = Hash.new
+    h = {}
     neighbours.each do |cell|
-      h[cell.to_a] = h[cell.to_a].nil? ? 1 : h[cell.to_a]+1
+      h[cell.to_a] = h[cell.to_a].nil? ? 1 : h[cell.to_a] + 1
     end
     h
-  end
-
-  def is_alive?(cell)
-    @alive_cells.include?(cell)
   end
 end
